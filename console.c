@@ -651,6 +651,7 @@ bool run_console(char *infile_name)
             linenoiseHistorySave(HISTORY_FILE); /* Save the history on disk. */
             linenoiseFree(cmdline);
         }
+        linenoiseFreeHistory();
     } else {
         while (!cmd_done())
             cmd_select(0, NULL, NULL, NULL, NULL);

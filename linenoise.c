@@ -1195,6 +1195,7 @@ static void freeHistory(void)
         for (j = 0; j < history_len; j++)
             free(history[j]);
         free(history);
+        history = NULL;
     }
 }
 
@@ -1326,4 +1327,10 @@ int linenoiseHistoryLoad(const char *filename)
     }
     fclose(fp);
     return 0;
+}
+
+void linenoiseFreeHistory(void)
+{
+    freeHistory();
+    return;
 }

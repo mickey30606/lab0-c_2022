@@ -862,8 +862,54 @@ static bool do_show(int argc, char *argv[])
     return show_queue(0);
 }
 
+bool do_hello(int argc, char *argv[])
+{
+    printf("number of argc : %d\n", argc);
+    for (int i = 0; i < argc; i++) {
+        printf("strings in argv[] : %s\n", argv[i]);
+    }
+    return (bool) printf("Hello, World\n");
+}
+
+void q_shuffle(struct list_head *head)
+{
+    if (!head || list_empty(head))
+        return;
+    struct list_head *tail = head;
+    int len = q_size(head);
+    for (int i = len; i > 0; i--) {
+        int r = rand() % i + 1;
+        int count = 0;
+        struct list_head *target = head->next;
+        while (++count != r)
+            target = target->next;
+        list_move_tail(target, tail);
+        tail = tail->prev;
+    }
+    return;
+}
+
+bool do_shuffle(int argc, char *argv[])
+{
+    if (argc != 1) {
+        report(1, "%s takes no arguments", argv[0]);
+        return false;
+    }
+    if (!l_meta.l) {
+        report(1, "l = NULL");
+        return true;
+    }
+    if (exception_setup(true))
+        q_shuffle(l_meta.l);
+    exception_cancel();
+
+    return show_queue(0);
+}
+
 static void console_init()
 {
+    ADD_COMMAND(shuffle, "                | Shuffle the queue");
+    ADD_COMMAND(hello, "                | Say hello to you");
     ADD_COMMAND(new, "                | Create new queue");
     ADD_COMMAND(free, "                | Delete queue");
     ADD_COMMAND(
